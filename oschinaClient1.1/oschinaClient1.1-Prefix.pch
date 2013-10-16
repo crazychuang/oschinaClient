@@ -11,4 +11,13 @@
 #ifdef __OBJC__
     #import <UIKit/UIKit.h>
     #import <Foundation/Foundation.h>
+
+#import "oschinaDef.h"
+#import "oschinaTool.h"
+#import "superNavPage.h"
+#import "superNavBackPage.h"
+#import "config.h"
+#import "IIViewDeckController.h"
+#import "oschinaSingleton.h"
+#import "CustomNavPage.h"
 #endif

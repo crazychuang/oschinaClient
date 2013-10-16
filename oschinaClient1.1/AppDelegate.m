@@ -1,58 +1,86 @@
 //
 //  AppDelegate.m
-//  oschinaClient1.1
+//  oschinaClient
 //
-//  Created by boai on 13-8-19.
+//  Created by boai on 13-5-31.
 //  Copyright (c) 2013年 bravetorun. All rights reserved.
 //
 
 #import "AppDelegate.h"
-
-#import "ViewController.h"
+#import <QuartzCore/QuartzCore.h>
 
 @implementation AppDelegate
-
+@synthesize settingView;
+@synthesize tabBarController;
+@synthesize viewCotroller = _viewController;
 - (void)dealloc
 {
     [_window release];
-    [_viewController release];
     [super dealloc];
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
-    // Override point for customization after application launch.
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
-        self.viewController = [[[ViewController alloc] initWithNibName:@"ViewController_iPhone" bundle:nil] autorelease];
-    } else {
-        self.viewController = [[[ViewController alloc] initWithNibName:@"ViewController_iPad" bundle:nil] autorelease];
-    }
-    self.window.rootViewController = self.viewController;
+    
+    complexPage *complex = [[complexPage alloc] initWithNibName:[oschinaTool getXibName:@"complexPage"] bundle:nil];
+    UINavigationController *complexNav = [[UINavigationController alloc] initWithRootViewController:complex];
+    
+    leftSideViewPage *leftSidePage = [[leftSideViewPage alloc] initWithNibName:[oschinaTool getXibName:@"leftSideViewPage"] bundle:nil];
+    _viewController = [[IIViewDeckController alloc] initWithCenterViewController:complexNav leftViewController:leftSidePage];
+    //_viewController.enabled = NO;
+    
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    self.window.rootViewController = self.viewCotroller;
     [self.window makeKeyAndVisible];
+    
+    
+    SQLiteDatabase *_db = [oschinaTool initDB:DB_OSCHINA_CLIENT];
+    bool _bRet = [oschinaTool createTweetTable:_db nametable:@"tweetCache"];
+    NSLog(@"%d",_bRet);
+    [_db close];
+    
+//    _fView = [[UIImageView alloc] initWithFrame:_window.frame];
+//    _fView.image = [UIImage imageNamed:@"f"];
+//    
+//    _zView = [[UIImageView alloc] initWithFrame:_window.frame];
+//    _zView.image = [UIImage imageNamed:@"z"];
+//    
+//    _rView = [[UIView alloc] initWithFrame:_window.frame];
+//    
+//    [_rView addSubview:_fView];
+//    [_rView addSubview:_zView];
+//    
+//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//        sleep(3);
+//        
+//    });
+    //sleep(3);
     return YES;
+}
+
+- (void)TheAnimation{
+    CATransition *_animation = [CATransition animation];
+    _animation.delegate = self;
+    _animation.duration = 0.7f;
+    //_animation.timingFunction = UIViewAnimationCurveEaseInOut;
+    _animation.type = kCATransitionFade;
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
 {
-    // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-    // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+    
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
-    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
-    // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
-    // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
-    // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
